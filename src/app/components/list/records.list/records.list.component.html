@@ -1,0 +1,443 @@
+<!-- Main Content -->
+<div class="row">
+
+
+    
+    <!-- Search Bar -->
+    <div class="col-md-8">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search" />
+    
+          <div class="input-group-append ">
+            <button class="btn btn-outline-secondary " type="button" (click)="findRecord()">
+              <i class="glyphicon glyphicon-search"></i>
+            </button>
+          </div>
+    
+        </div>
+      </div>
+
+    <!-- Title And Toolbar -->
+    <div class="col-md-8">
+        <div class="input-group mb-3 d-table">
+
+            <h4 class=" d-table-cell">{{ Title }}s</h4>
+            <div class="input-group-append d-table-cell tar">
+                <button class="btn btn-outline-success " data-bs-toggle="modal" data-bs-target="#add-new"
+                    (click)="resetNewRecord()">
+                    <i class="glyphicon glyphicon-plus"></i> Add New
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="col-md-12 mb-3">
+        <table class="table table-responsive-lg table-hover">
+
+            <!-- Table Headings -->
+            <thead class="ignore">
+                <tr>
+                    <td>Reg #</td>
+                    <td>Vehicle</td>
+                    <td>Client Name</td>
+                    <td>Date of Reservation</td>
+                    <td>Date To Collect</td>
+                    <td>Date To Return</td>
+                    <td>Total Price</td>
+                    <td>Actions</td>
+                </tr>
+            </thead>
+
+            <!-- Table Contents -->
+            <tbody>
+                <tr *ngFor="let record of records"
+                    (click)="selectRecord(record); selectUpdateRecord(record); $event.stopPropagation()"
+                    data-bs-toggle="modal" data-bs-target="#details">
+                    <td>{{ record.car?.registrationNumber }}</td>
+                    <td>
+                        {{ record.car?.color }}
+                        {{ record.car?.carModel?.carManufacturer?.manufacturer }}
+                        {{ record.car?.carModel?.carModel }}
+                        ({{ record.car?.carModel?.year }})
+                        - {{ record.car?.carModel?.carCategory?.carCategory }}
+                    </td>
+                    <td>{{ record.client?.firstName }} {{ record.client?.lastName }}</td>
+                    <td>{{ record.dateReservationMade }}</td>
+                    <td>{{ record.dateToCollect }}</td>
+                    <td>{{ record.dateToReturn }}</td>
+
+
+                    <td>R {{ record.totalPrice }}</td>
+
+                    <!-- Action Buttons -->
+                    <td>
+                        <!-- Edit -->
+                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit"
+                            (click)="selectUpdateRecord(record); selectRecord(record); $event.stopPropagation()">
+                            <i class="glyphicon glyphicon-pencil"></i> Edit
+                        </button>
+
+                        <!-- Delete -->
+                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete"
+                            (click)="selectRecord(record);$event.stopPropagation()">
+                            <i class="glyphicon glyphicon-trash"></i> Delete
+                        </button>
+                    </td>
+
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+
+</div>
+
+<!-- Add New Modal -->
+<div class="modal fade" id="add-new" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Add {{ Title }}</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <!-- Input Reg Number -->
+                <div class=" form-group col-md-7">
+                    <label>Car to Reserve</label>
+                    <select class="btn btn-secondary form-select-sm">
+                        <option *ngFor="let car of cars" (click)="selectNewCar(car)" [value]="newRecord.carId">
+                            <a>
+                                {{ car?.carModel?.carManufacturer?.manufacturer }}
+                                {{ car?.carModel?.carModel }}
+                                ({{ car?.carModel?.year }})
+                                - {{ car?.carModel?.carCategory?.carCategory }}
+                            </a>
+                        </option>
+                    </select>
+                </div>
+                <div class=" form-group col-md-7">
+                    <label>for Client</label>
+                    <br>
+                    <select class="btn btn-secondary form-select-sm">
+                        <option *ngFor="let client of clients" (click)="selectNewClient(client)"
+                            [value]="newRecord.clientId">
+                            <a>
+                                {{ client.firstName}} {{ client.lastName}}
+                            </a>
+                        </option>
+                    </select>
+                </div>
+
+                <div class=" form-group col-md-7">
+                    <label>Registration Number</label>
+                    <input class="form-control" type="date" [(ngModel)]="newRecord.dateToCollect">
+                </div>
+                <div class=" form-group col-md-7">
+                    <label>Registration Number</label>
+                    <input class="form-control" type="date" [(ngModel)]="newRecord.dateToReturn">
+                </div>
+
+
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    (click)="addNewRecord()">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit" role="dialog" *ngIf="editMode == true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Edit {{ Title }}</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <!-- Input Reg Number -->
+                <div class=" form-group col-md-7">
+                    <label>Car to Reserve</label>
+                    <select class="btn btn-secondary form-select-sm">
+                        <option selected disabled hidden>
+                            <a>
+                                {{ selectedRecord?.car?.registrationNumber}}
+                                {{ selectedRecord?.car?.color}}
+                                {{ selectedRecord?.car?.carModel?.carManufacturer?.manufacturer }}
+                                {{ selectedRecord?.car?.carModel?.carModel }}
+                                ({{ selectedRecord?.car?.carModel?.year }})
+                                - {{ selectedRecord?.car?.carModel?.carCategory?.carCategory }}
+                            </a>
+                        </option>
+                        <option *ngFor="let car of cars" (click)="selectNewCar(car)" [value]="updatedRecord.carId">
+                            <a>
+                                {{ car?.registrationNumber}}
+                                {{ car?.color}}
+                                {{ car?.carModel?.carManufacturer?.manufacturer }}
+                                {{ car?.carModel?.carModel }}
+                                ({{ car?.carModel?.year }})
+                                - {{ car?.carModel?.carCategory?.carCategory }}
+                            </a>
+                        </option>
+                    </select>
+                </div>
+                <div class=" form-group col-md-7">
+                    <label>for Client</label>
+                    <br>
+                    <select class="btn btn-secondary form-select-sm">
+                        <option *ngFor="let client of clients" (click)="selectNewClient(client)"
+                            [value]="updatedRecord.clientId">
+                            <a>
+                                {{ client.firstName}} {{ client.lastName}}
+                            </a>
+                        </option>
+                    </select>
+                </div>
+
+                <div class=" form-group col-md-7">
+                    <label>Registration Number</label>
+                    <input class="form-control" type="date" [(ngModel)]="updatedRecord.dateToCollect">
+                </div>
+                <div class=" form-group col-md-7">
+                    <label>Registration Number</label>
+                    <input class="form-control" type="date" [(ngModel)]="updatedRecord.dateToReturn">
+                    <input class="form-control" type="hidden" [(ngModel)]="updatedRecord.recordId">
+                    {{updatedRecord.dateToReturn}}
+                </div>
+
+
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" (click)="toggleEditMode()">
+                    <i class="glyphicon glyphicon-pencil"></i> Back
+                </button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    (click)="updateRecord()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="details" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" *ngIf="editMode == false; else editable">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>{{ Title }} Details</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <br>
+            <p></p>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p *ngIf="showSuccessMessage" class=" text text-success ">The Record {{ methodRequest }}</p>
+
+                <!-- Car -->
+                <div class=" form-group">
+                    <h5>Reserved Car</h5>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Registration Number:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.car?.registrationNumber }}
+                        </p>
+
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Model:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.car?.carModel?.carManufacturer?.manufacturer }}
+                            {{ selectedRecord.car?.carModel?.carModel }}
+                            {{ selectedRecord.car?.carModel?.year }}
+                            {{ selectedRecord.car?.carModel?.carCategory?.carCategory }}
+                        </p>
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Color:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.car?.color }}
+                        </p>
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Price per Day:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            R{{ selectedRecord.car?.price }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Client -->
+                <div class=" form-group">
+                    <h5>Client</h5>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Name: </b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.client?.firstName }}
+                            {{ selectedRecord.client?.lastName }}
+                        </p>
+
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Phone:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.client?.mobileNumber }}
+                        </p>
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Email:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            <a href="mailto:{{selectedRecord.client?.emailAddress}}">
+                                {{ selectedRecord.client?.emailAddress }}
+                            </a>
+                        </p>
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Home Address:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.client?.homeAddress }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h5>Reserved Dates</h5>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>Reservation Made:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.dateReservationMade }}
+                        </p>
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>From: </b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.dateToCollect }}
+                        </p>
+                    </div>
+                    <div class="d-table col-md-12">
+                        <p class="d-table-cell col-md-5"><b>To:</b></p>
+                        <p class="d-table-cell col-md-7">
+                            {{ selectedRecord.dateToReturn }}
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="float-left">Total Price: R{{ selectedRecord.totalPrice}}</h5>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" (click)="toggleEditMode()">
+                    <i class="glyphicon glyphicon-pencil"></i> Edit
+                </button>
+                <button type="button" class="btn btn-outline-danger">
+                    <i class="glyphicon glyphicon-trash"></i> Delete
+                </button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <ng-template #editable>
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4>Edit {{ Title }}</h4>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <!-- Input Reg Number -->
+                    <div class=" form-group col-md-7">
+                        <label>Car to Reserve</label>
+                        <select class="btn btn-secondary form-select-sm">
+                            <option selected disabled hidden>
+                                <a>
+                                    {{ selectedRecord?.car?.registrationNumber}}
+                                    {{ selectedRecord?.car?.color}}
+                                    {{ selectedRecord?.car?.carModel?.carManufacturer?.manufacturer }}
+                                    {{ selectedRecord?.car?.carModel?.carModel }}
+                                    ({{ selectedRecord?.car?.carModel?.year }})
+                                    - {{ selectedRecord?.car?.carModel?.carCategory?.carCategory }}
+                                </a>
+                            </option>
+                            <option *ngFor="let car of cars" (click)="selectNewCar(car)" [value]="updatedRecord.carId">
+                                <a>
+                                    {{ car?.registrationNumber}}
+                                    {{ car?.color}}
+                                    {{ car?.carModel?.carManufacturer?.manufacturer }}
+                                    {{ car?.carModel?.carModel }}
+                                    ({{ car?.carModel?.year }})
+                                    - {{ car?.carModel?.carCategory?.carCategory }}
+                                </a>
+                            </option>
+                        </select>
+                    </div>
+                    <div class=" form-group col-md-7">
+                        <label>for Client</label>
+                        <br>
+                        <select class="btn btn-secondary form-select-sm">
+                            <option *ngFor="let client of clients" (click)="selectNewClient(client)"
+                                [value]="updatedRecord.clientId">
+                                <a>
+                                    {{ client.firstName}} {{ client.lastName}}
+                                </a>
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class=" form-group col-md-7">
+                        <label>Set Collect Date</label>
+                        <input class="form-control" type="date" [(ngModel)]="updatedRecord.dateToCollect" (change)="calcTPrice()">
+                    </div>
+                    <div class=" form-group col-md-7">
+                        <label>Set Return Date</label>
+                        <input class="form-control" type="date" [(ngModel)]="updatedRecord.dateToReturn" (change)="calcTPrice()">
+                        <input class="form-control" type="hidden" [(ngModel)]="updatedRecord.recordId">
+                    </div>
+
+
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <h4>Total Price: R {{totalPrice}}</h4>
+                    <button type="button" class="btn btn-outline-secondary" (click)="toggleEditMode()">
+                        <i class="glyphicon glyphicon-arrow-left"></i> Back
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                        (click)="updateRecord(); toggleEditMode(); selectRecord(selectedRecord)">
+                        <i class="glyphicon glyphicon-pencil"></i> Update
+                    </button>
+                    <button type="button" class="btn btn-default"  data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </ng-template>
+
+
+    </div>
+</div>

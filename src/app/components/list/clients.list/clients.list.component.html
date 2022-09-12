@@ -1,0 +1,213 @@
+<!-- Main Content -->
+<div class="row">
+
+    <!-- Search Bar -->
+    <div class="col-md-8">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search" />
+  
+        <div class="input-group-append ">
+          <button class="btn btn-outline-secondary " type="button" (click)="findClient()">
+            <i class="glyphicon glyphicon-search"></i>
+          </button>
+        </div>
+  
+      </div>
+    </div>
+  
+  
+    <!-- Title And Toolbar -->
+    <div class="col-md-8">
+      <div class="input-group mb-3 d-table">
+  
+        <h4 class=" d-table-cell">{{ Title }}s</h4>
+        <div class="input-group-append d-table-cell tar">
+          <button class="btn btn-outline-success " data-bs-toggle="modal" data-bs-target="#add-new"
+            (click)="resetNewClient()">
+            <i class="glyphicon glyphicon-plus"></i> Add New
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Table -->
+    <div class="col-md-12 mb-3">
+      <table class="table table-responsive-lg table-hover">
+  
+        <!-- Table Headings -->
+        <thead class="ignore">
+          <tr>
+            <td>Name</td>
+            <td>Email Address</td>
+            <td>Phone Number</td>
+            <td>Home Adress</td>
+            <td>Actions</td>
+          </tr>
+        </thead>
+  
+        <!-- Table Contents -->
+        <tbody>
+          <tr *ngFor="let client of clients" (click)="inProgress()">
+            <td>{{ client.firstName }} {{ client.lastName }}</td>
+            <td>{{ client.emailAddress }}</td>
+            <td>{{ client.mobileNumber }}</td>
+            <td>{{ client.homeAddress }}</td>
+            
+  
+            <!-- Action Buttons -->
+            <td>
+              <!-- Edit -->
+              <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit"
+                (click)="selectClient(client);$event.stopPropagation()">
+                <i class="glyphicon glyphicon-pencil"></i> Edit
+              </button>
+  
+              <!-- Delete -->
+              <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete"
+                (click)="selectClient(client);$event.stopPropagation()">
+                <i class="glyphicon glyphicon-trash"></i> Delete
+              </button>
+            </td>
+  
+          </tr>
+        </tbody>
+  
+      </table>
+    </div>
+  
+  </div>
+  
+  <!-- Add New Modal -->
+  <div class="modal fade" id="add-new" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4>Add {{ Title }}</h4>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+        </div>
+  
+        <!-- Modal Body -->
+        <div class="modal-body">
+  
+          <!-- Input Reg Number -->
+          <div class=" form-group">
+            <label>First Name</label>
+            <input class="form-control" [(ngModel)]="newClient.firstName">
+          </div>
+  
+          <!-- Input Color -->
+          <div class=" form-group">
+            <label>Last Name</label>
+            <input class="form-control" [(ngModel)]="newClient.lastName">
+          </div>
+  
+          <!-- Input Price -->
+          <div class=" form-group">
+            <label>Email Address</label>
+            <input class="form-control" [(ngModel)]="newClient.emailAddress">
+          </div>
+
+          <!-- Input Price -->
+        <div class=" form-group">
+          <label>Mobile Number</label>
+          <input class="form-control" [(ngModel)]="newClient.mobileNumber">
+        </div>
+
+           <!-- Input Price -->
+           <div class=" form-group">
+            <label>Home Address</label>
+            <input class="form-control" [(ngModel)]="newClient.homeAddress">
+          </div>
+        </div>
+  
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addClient()">Add</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
+  <!-- Edit Modal -->
+  <div class="modal fade" id="edit" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4>Edit {{ Title }}</h4>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+        </div>
+  
+       <!-- Modal Body -->
+       <div class="modal-body">
+  
+        <!-- Input Reg Number -->
+        <div class=" form-group">
+          <label>First Name</label>
+          <input class="form-control" [(ngModel)]="selectedClient.firstName">
+        </div>
+
+        <!-- Input Color -->
+        <div class=" form-group">
+          <label>Last Name</label>
+          <input class="form-control" [(ngModel)]="selectedClient.lastName">
+        </div>
+
+        <!-- Input Price -->
+        <div class=" form-group">
+          <label>Email Address</label>
+          <input class="form-control" [(ngModel)]="selectedClient.emailAddress">
+        </div>
+
+        <!-- Input Price -->
+        <div class=" form-group">
+          <label>Mobile Number</label>
+          <input class="form-control" [(ngModel)]="selectedClient.mobileNumber">
+        </div>
+
+         <!-- Input Price -->
+         <div class=" form-group">
+          <label>Home Address</label>
+          <input class="form-control" [(ngModel)]="selectedClient.homeAddress">
+        </div>
+      </div>
+  
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="updateClient()">Update</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Modal -->
+  <div class="modal fade" id="delete" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4>Delete {{ Title }}</h4>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+        </div>
+  
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <p>Are you sure you want to delete <b>{{selectedClient.firstName}} {{selectedClient.lastName }}</b> ?</p>
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">No</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="updateClient()">Yes</button>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </div>

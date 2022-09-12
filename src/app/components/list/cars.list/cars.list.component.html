@@ -1,0 +1,250 @@
+<!-- Main Content -->
+<div class="row">
+
+  <!-- Search Bar -->
+  <div class="col-md-8">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search" />
+
+      <div class="input-group-append ">
+        <button class="btn btn-outline-secondary " type="button" (click)="findCar()">
+          <i class="glyphicon glyphicon-search"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Title And Toolbar -->
+  <div class="col-md-8">
+    <div class="input-group mb-3 d-table">
+
+      <h4 class=" d-table-cell">{{ Title }}s</h4>
+      <div class="input-group-append d-table-cell tar">
+        <button class="btn btn-outline-success " data-bs-toggle="modal" data-bs-target="#add-new"
+          (click)="resetNewCar()">
+          <i class="glyphicon glyphicon-plus"></i> Add New
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Table -->
+  <div class="col-md-8 mb-3">
+    <table class="table table-responsive-lg table-hover">
+
+      <!-- Table Headings -->
+      <thead>
+        <tr>
+          <td>Reg #</td>
+          <td>Vehicle</td>
+          <td>Price/day</td>
+          <td>Actions</td>
+        </tr>
+      </thead>
+
+      <!-- Table Contents -->
+      <tbody>
+        <tr *ngFor="let car of cars" (click)="inProgress()">
+          <td>{{ car.registrationNumber }}</td>
+          <td>
+            {{ car.color }}
+            {{ car.carModel?.carManufacturer?.manufacturer }}
+            {{ car.carModel?.carModel }}
+            ({{ car.carModel?.year }})
+            - {{ car.carModel?.carCategory?.carCategory }}
+
+          </td>
+
+          <td>R {{ car.price }}</td>
+
+          <!-- Action Buttons -->
+          <td>
+            <!-- Edit -->
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit"
+              (click)="selectUpdateCar(car); selectCar(car); $event.stopPropagation()">
+              <i class="glyphicon glyphicon-pencil"></i> Edit
+            </button>
+
+            <!-- Delete -->
+            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete"
+              (click)="selectCar(car);$event.stopPropagation()">
+              <i class="glyphicon glyphicon-trash"></i> Delete
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+<!-- Add New Modal -->
+<div class="modal fade" id="add-new" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4>Add {{ Title }}</h4>
+        <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+
+        <!-- Input Reg Number -->
+        <div class=" form-group col-md-7">
+          <label>Registration Number</label>
+          <input class="form-control" [(ngModel)]="newCar.registrationNumber">
+        </div>
+
+        <!-- Input Color -->
+        <div class=" form-group col-md-4">
+          <label>Color</label>
+          <br> 
+          <input class="form-control" [(ngModel)]="newCar.color">
+          
+        </div>
+
+        <!-- Input Price -->
+        <div class=" form-group col-md-4">
+          <label>Price / day</label>
+          <input type="number" class="form-control form-number" min="0" [(ngModel)]="newCar.price">
+        </div>
+
+        <!-- Input Car Model -->
+        <div class=" form-group col-md-4">
+          <label>Car Model</label>
+          <br>
+          <select class="btn btn-secondary form-select-sm">
+            <option *ngFor="let model of carModels" (click)="selectNewModel(model)" [value]="newCar.modelId">
+              <a>
+                {{ model?.carManufacturer?.manufacturer }}
+                {{ model?.carModel }}
+                ({{ model?.year }})
+                - {{ model?.carCategory?.carCategory }}
+              </a>
+            </option>
+          </select>
+        </div>
+
+
+
+      </div>
+
+
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addCar()">Add</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4>Edit {{ Title }}</h4>
+        <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+
+        <!-- Input Reg Number -->
+        <div class=" form-group">
+          <label>Registration Number</label>
+          <input class="form-control" [(ngModel)]="updatedCar.registrationNumber">
+        </div>
+
+        <!-- Input Color -->
+        <div class=" form-group">
+          <label>Color</label>
+          <br>
+          <input class="form-control" [(ngModel)]="updatedCar.color">
+          
+        </div>
+
+        <!-- Input Price -->
+        <div class=" form-group">
+          <label>Price / day</label>
+          <input class="form-control" [(ngModel)]="updatedCar.price">
+        </div>
+        <!-- Input Car Model -->
+        <div class=" form-group col-md-12">
+          <label>Car Model</label>
+          <br>
+            <select class="btn btn-secondary form-select-sm ">
+              <option selected disabled hidden>
+                {{ selectedCar.carModel?.carManufacturer?.manufacturer }}
+                {{ selectedCar.carModel?.carModel }}
+                ({{ selectedCar.carModel?.year }})
+                - {{ selectedCar.carModel?.carCategory?.carCategory }}
+              </option>
+              <option *ngFor="let model of carModels" (click)="selectUpdateModel(model)" [value]="updatedCar.modelId">
+                <a>
+                  {{ model?.carManufacturer?.manufacturer }}
+                  {{ model?.carModel }}
+                  ({{ model?.year }})
+                  - {{ model?.carCategory?.carCategory }}
+                </a>
+              </option>
+            </select>
+          <div class="col-md-3 display-inline ">
+            <a class="link-primary text-decoration-underline page-link" 
+            (click)="goTo('/model/add')" data-bs-dismiss="modal">
+              Create New
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="updateCar()">Update</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4>Delete {{ Title }}</h4>
+        <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <p>Are you sure you want to delete <b>{{selectedCar.registrationNumber}}</b> ?</p>
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">No</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="inProgress()">Yes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

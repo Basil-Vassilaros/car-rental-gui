@@ -1,0 +1,60 @@
+<div class="col-md-12 dinline">
+    <div class="submit-form">
+        <div *ngIf="!submitted">
+            <h3>Create new Model</h3>
+            <hr>
+            <p class="text text-danger">{{ errMsg}}</p>
+            <div class="form-group col-md-5">
+                <h6 for="manufacturer">Manufacturer</h6>
+                <select class="btn btn-secondary form-select-sm col-md-9" id="manufacturer" name="manufacturer">
+                    <option *ngFor="let manufacturer of manufacturers" (click)="selectManufacturer(manufacturer)">
+                        {{ manufacturer.manufacturer}}
+                    </option>
+                </select>
+                <a class=" link-primary page-link text-decoration-underline col-md-3"
+                    (click)="goTo('/manufacturer/add')">Create New</a>
+            </div>
+
+
+            <div class="form-group col-md-5">
+                <h6 for="Category">Vehicle Category</h6>
+                <select class="btn btn-secondary form-select-sm col-md-9" id="Category" name="Category">
+                    <option *ngFor="let category of categories" (click)="selectCategory(category)">
+                        {{ category.carCategory}}
+                    </option>
+                </select>
+                <a class=" link-primary page-link text-decoration-underline col-md-3"
+                    (click)="goTo('/category/add')">Create New</a>
+            </div>
+
+            <div class="form-group col-md-5 dinline d-table-cell">
+                <h6 for="model">Model</h6>
+                <input type="text" class="form-control col-md-9" id="model" required [(ngModel)]="carModel.carModel"
+                    name="model" />
+                <p class="text-danger">{{ errModel }}</p>
+            </div>
+
+            <div class="form-group col-md-5 dinline d-table-cell">
+                <h6 for="year">Year</h6>
+                <input type="number" class="form-control col-md-5" id="year" required [(ngModel)]="carModel.year"
+                    name="year" min="1990" placeholder="{{defaultYear}}" max="{{defaultYear}}" (input)="checkYear()" />
+                <p class="text-danger">{{ errYear }}</p>
+            </div>
+
+            <br>
+
+            <div class="col-md-12">
+                <button class="btn btn-primary" (click)="goTo('\model')">Go Back</button>
+                <button (click)="save()" class="btn btn-success ">Submit</button>
+            </div>
+        </div>
+
+        <div *ngIf="submitted">
+            <h6>{{ entity }} was submitted successfully!</h6>
+            <button class="btn btn-primary" (click)="goTo('\model')">Go Back</button>
+            <!-- <button class="btn btn-success" (click)="newTutorial()">Add</button> -->
+        </div>
+
+
+    </div>
+</div>
