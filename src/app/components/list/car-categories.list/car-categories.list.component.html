@@ -1,0 +1,121 @@
+<!-- Main Content -->
+<div class="row">
+
+    <!-- Search Bar -->
+    <div class="col-md-8">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchPhrase" />
+  
+        <div class="input-group-append ">
+          <button class="btn btn-outline-secondary " type="button" (click)="searchCategory()">
+            <i class="glyphicon glyphicon-search"></i>
+          </button>
+        </div>
+  
+      </div>
+    </div>
+  
+  
+    <!-- Title And Toolbar -->
+    <div class="col-md-8">
+      <div class="input-group mb-3 d-table">
+  
+        <h4 class=" d-table-cell">{{ entity }}ies</h4>
+        <div class="input-group-append d-table-cell tar">
+          <button class="btn btn-outline-success "
+            (click)="goTo('/category/add')">
+            <i class="glyphicon glyphicon-plus"></i> Add New
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <table class="table table-responsive-lg table-hover">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Category</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cat of categories">
+                <td>{{cat.categoryId}}</td>
+                <td>{{cat.carCategory}}</td>
+                <!-- Action Buttons -->
+                <td>
+                    <!-- Edit -->
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit"
+                        (click)="selectCategory(cat); $event.stopPropagation()">
+                        <i class="glyphicon glyphicon-pencil"></i> Edit
+                    </button>
+    
+                    <!-- Delete -->
+                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete"
+                        (click)="selectCategory(cat);$event.stopPropagation()">
+                        <i class="glyphicon glyphicon-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Edit {{ entity }}y</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Input Color -->
+                <div class=" form-group">
+                    <label>Category</label>
+                    <br>
+                    <input class="form-control" [(ngModel)]="selectedCategory.carCategory">
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    (click)="editCategory()">Update</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Delete {{ entity }}y</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>Are you sure you want to delete <b>{{selectedCategory.carCategory}}</b> ?</p>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        (click)="deleteCategory()">Yes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

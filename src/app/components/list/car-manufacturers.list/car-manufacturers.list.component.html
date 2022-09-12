@@ -1,0 +1,125 @@
+<!-- Main Content -->
+<div class="row">
+
+    <!-- Search Bar -->
+    <div class="col-md-8">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="phrase" />
+  
+        <div class="input-group-append ">
+          <button class="btn btn-outline-secondary " type="button" (click)="search()">
+            <i class="glyphicon glyphicon-search"></i>
+          </button>
+        </div>
+  
+      </div>
+    </div>
+  
+  
+    <!-- Title And Toolbar -->
+    <div class="col-md-8">
+      <div class="input-group mb-3 d-table">
+  
+        <h4 class=" d-table-cell">{{ entity }}s</h4>
+        <div class="input-group-append d-table-cell tar">
+          <button class="btn btn-outline-success "
+            (click)="goTo('/manufacturer/add')">
+            <i class="glyphicon glyphicon-plus"></i> Add New
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <table class="table table-responsive-lg table-hover">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Manufacturer</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let man of manufacturers">
+                <td>{{man.manufacturerId}}</td>
+                <td>{{man.manufacturer}}</td>
+                <!-- Action Buttons -->
+                <td>
+                    <!-- Edit -->
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit"
+                        (click)="selectManufacturer(man); $event.stopPropagation()">
+                        <i class="glyphicon glyphicon-pencil"></i> Edit
+                    </button>
+    
+                    <!-- Delete -->
+                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete"
+                        (click)="selectManufacturer(man);$event.stopPropagation()">
+                        <i class="glyphicon glyphicon-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Edit {{ entity }}</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Input Color -->
+                <div class=" form-group">
+                    <label>Manufacturer</label>
+                    <br>
+                    <input class="form-control" [(ngModel)]="selectedMan.manufacturer">
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    (click)="update()">Update</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Delete {{ entity }}</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>Are you sure you want to delete <b>{{selectedMan.manufacturer}}</b> ?</p>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        (click)="deleteMan()">Yes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
