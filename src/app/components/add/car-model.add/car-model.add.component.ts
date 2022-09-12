@@ -21,9 +21,15 @@ export class CarModelAddComponent implements OnInit {
   submitted = false;
   defaultYear: Number = new Date().getFullYear();
 
+  selectedCategory?: CarCategory;
+  selectedManufacturer?: CarManufacturer;
+
   errMsg = "";
   errYear = "";
   errModel = "";
+
+  searchManPhrase = "";
+  searchCatPhrase = "";
 
   errorExist = false;
 
@@ -56,6 +62,7 @@ export class CarModelAddComponent implements OnInit {
     this.carCategoryService.getAll().subscribe({
       next: (data) => {
         this.categories = data;
+        this.selectedCategory = this.categories[0];
       },
       error: (e) => console.error(e.error)
     })
@@ -65,6 +72,8 @@ export class CarModelAddComponent implements OnInit {
     this.carManufacturerService.getAll().subscribe({
       next: (data) => {
         this.manufacturers = data;
+        this.selectedManufacturer = this.manufacturers[0];
+
       },
       error: (e) => console.error(e.error)
     })
@@ -72,10 +81,12 @@ export class CarModelAddComponent implements OnInit {
 
   selectManufacturer(manufacturer: CarManufacturer) {
     this.carModel.manufacturerId = manufacturer.manufacturerId;
+    this.selectedManufacturer = manufacturer;
   }
 
   selectCategory(category: CarCategory) {
     this.carModel.categoryId = category.categoryId;
+    this.selectedCategory = category;
   }
 
   checkYear() {
@@ -84,26 +95,26 @@ export class CarModelAddComponent implements OnInit {
       this.errYear = "Select a valid year from 1990-" + this.defaultYear;
       this.errorExist = true;
     }
-    else{
+    else {
       this.errYear = "";
       this.errorExist = false;
     }
   }
 
-  checkValidInput(){
-    if(this.carModel.carModel == ""){
+  checkValidInput() {
+    if (this.carModel.carModel == "") {
       this.errModel = "Enter a model";
       this.errorExist = true;
     }
-    else{
+    else {
       this.errModel = "";
       this.errorExist = false;
     }
-    if(this.carModel.year == ""){
+    if (this.carModel.year == "") {
       this.errYear = "Enter a year";
       this.errorExist = true;
     }
-    else{
+    else {
       this.errYear = "";
       this.errorExist = false;
     }
@@ -112,28 +123,28 @@ export class CarModelAddComponent implements OnInit {
   save(): void {
     this.checkValidInput();
     this.checkYear();
-    if(!this.errorExist){
+    if (!this.errorExist) {
       this.carModelService.create(this.carModel)
-      .subscribe({
-        next: (res) => {
-          console.log(res);
-        },
-        error: (e) => {
-          console.error(e);
-          if (e.status == 202) {
-            this.submitted = true;
-            this.retrieveModels();
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (e) => {
+            console.error(e);
+            if (e.status == 202) {
+              this.submitted = true;
+              this.retrieveModels();
+            }
+            else {
+              this.errMsg = e.error;
+            }
           }
-          else {
-            this.errMsg = e.error;
-          }
-        }
-      });
+        });
     }
-    else{
+    else {
       this.errMsg = "There are invalid fields"
     }
-    
+
   }
 
   new(): void {
@@ -150,5 +161,48 @@ export class CarModelAddComponent implements OnInit {
     const navigationDetails: string[] = [target];
     this.router.navigate(navigationDetails);
   }
+
+  goToTab(target: string): void {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([target])
+    );
+
+    window.open(url, '_blank');
+  }
+
+  // Search for Manufacturer
+  searchManufacturer(): void {
+    if (this.searchManPhrase == "") {
+      this.retrieveManufacturers();
+    }
+    else {
+      this.carManufacturerService.search(this.searchManPhrase)
+        .subscribe({
+          next: (data) => {
+            this.manufacturers = data;
+            console.log(data);
+          },
+          error: (e) => console.error(e)
+        });
+    }
+  }
+
+  // Search for Category
+  searchCategory(): void {
+    if (this.searchCatPhrase == "") {
+      this.retrieveCategories();
+    }
+    else {
+      this.carCategoryService.search(this.searchCatPhrase)
+        .subscribe({
+          next: (data) => {
+            this.categories = data;
+            console.log(data);
+          },
+          error: (e) => console.error(e)
+        });
+    }
+  }
+
 
 }

@@ -6,25 +6,17 @@
             <p class="text text-danger">{{ errMsg}}</p>
             <div class="form-group col-md-5">
                 <h6 for="manufacturer">Manufacturer</h6>
-                <select class="btn btn-secondary form-select-sm col-md-9" id="manufacturer" name="manufacturer">
-                    <option *ngFor="let manufacturer of manufacturers" (click)="selectManufacturer(manufacturer)">
-                        {{ manufacturer.manufacturer}}
-                    </option>
-                </select>
-                <a class=" link-primary page-link text-decoration-underline col-md-3"
-                    (click)="goTo('/manufacturer/add')">Create New</a>
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#select-manufacturer">
+                    {{ selectedManufacturer?.manufacturer }}
+                </button>
             </div>
 
 
             <div class="form-group col-md-5">
                 <h6 for="Category">Vehicle Category</h6>
-                <select class="btn btn-secondary form-select-sm col-md-9" id="Category" name="Category">
-                    <option *ngFor="let category of categories" (click)="selectCategory(category)">
-                        {{ category.carCategory}}
-                    </option>
-                </select>
-                <a class=" link-primary page-link text-decoration-underline col-md-3"
-                    (click)="goTo('/category/add')">Create New</a>
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#select-category">
+                    {{ selectedCategory?.carCategory }}
+                </button>
             </div>
 
             <div class="form-group col-md-5 dinline d-table-cell">
@@ -56,5 +48,123 @@
         </div>
 
 
+    </div>
+</div>
+
+<!-- Manufacturer Modal -->
+<div class="modal fade" id="select-manufacturer" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Select a Manufacturer</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <!-- Search Bar -->
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchManPhrase" />
+                        <div class="input-group-append ">
+                            <button class="btn btn-outline-secondary " type="button" (click)="searchManufacturer()">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary " (click)="retrieveManufacturers()">
+                            <i class="glyphicon glyphicon-refresh"></i>
+                        </button>
+                        <button class="btn btn-outline-success " (click)="goToTab('/manufacturer/add')">
+                            <i class="glyphicon glyphicon-plus"></i> Add New
+                        </button>
+                    </div>
+                </div>
+
+                <table class="table table-responsive-lg table-hover">
+                    <thead>
+                        <tr>
+                            <td>Id</td>
+                            <td>Manufacturer</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let man of manufacturers" (click)="selectManufacturer(man)" data-bs-dismiss="modal">
+                            <td>{{man?.manufacturerId}}</td>
+                            <td>{{man?.manufacturer}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal fade" id="select-category" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Select a Category</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <!-- Search Bar -->
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchCatPhrase" />
+                        <div class="input-group-append ">
+                            <button class="btn btn-outline-secondary " type="button" (click)="searchCategory()">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary " (click)="retrieveCategories()">
+                            <i class="glyphicon glyphicon-refresh"></i>
+                        </button>
+                        <button class="btn btn-outline-success " (click)="goToTab('/category/add')">
+                            <i class="glyphicon glyphicon-plus"></i> Add New
+                        </button>
+                    </div>
+                </div>
+
+                <table class="table table-responsive-lg table-hover">
+                    <thead>
+                        <tr>
+                            <td>Id</td>
+                            <td>Category</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cat of categories" (click)="selectCategory(cat)" data-bs-dismiss="modal">
+                            <td>{{cat?.categoryId}}</td>
+                            <td>{{cat?.carCategory}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>

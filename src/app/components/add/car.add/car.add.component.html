@@ -1,1 +1,123 @@
-<p>car.add works!</p>
+<div class="col-md-12 dinline">
+    <div class="submit-form">
+        <div *ngIf="!submitted">
+            <h3>Create new {{ entity }}</h3>
+            <hr>
+            <p class="text text-danger">{{ errMsg}}</p>
+            <div class="form-group col-md-5">
+                <h6 for="manufacturer">Registration Number</h6>
+                <input type="text" class="form-control col-md-9" id="model" required
+                    [(ngModel)]="newCar.registrationNumber" name="model" />
+                <p class="text text-danger">{{ errReg }}</p>
+
+            </div>
+
+
+            <div class="form-group col-md-5">
+                <h6 for="Category">Model</h6>
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#select-model">
+                    {{ defualtModel?.carManufacturer?.manufacturer}}
+                    {{ defualtModel?.carCategory?.carCategory}}
+                    {{ defualtModel?.carModel}}
+                    {{ defualtModel?.year}}
+                </button>
+
+
+
+            </div>
+
+            <div class="form-group col-md-5 dinline d-table-cell">
+                <h6 for="model">Color</h6>
+                <input type="text" class="form-control col-md-9" id="model" required [(ngModel)]="newCar.color"
+                    name="model" />
+                <p class="text text-danger">{{ errCol }}</p>
+            </div>
+
+            <div class="form-group col-md-5 dinline d-table-cell">
+                <h6 for="model">Price</h6>
+                <input type="number" class="form-control col-md-9" id="model" required [(ngModel)]="newCar.price"
+                    name="model" min="0" />
+                <p class="text text-danger">{{ errPrc }}</p>
+            </div>
+
+
+            <br>
+
+            <div class="col-md-12">
+                <button class="btn btn-primary" (click)="goTo('\model')">Go Back</button>
+                <button (click)="saveCar()" class="btn btn-success ">Submit</button>
+            </div>
+        </div>
+
+        <div *ngIf="submitted">
+            <h6>{{ entity }} was submitted successfully!</h6>
+            <button class="btn btn-primary" (click)="goTo('\model')">Go Back</button>
+            <!-- <button class="btn btn-success" (click)="newTutorial()">Add</button> -->
+        </div>
+
+
+    </div>
+</div>
+
+<!-- Model Modal -->
+<div class="modal fade" id="select-model" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4>Select a Model</h4>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <!-- Search Bar -->
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchPhrase" />
+                        <div class="input-group-append ">
+                            <button class="btn btn-outline-secondary " type="button" (click)="searchModel()">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary " (click)="retrieveModels()">
+                            <i class="glyphicon glyphicon-refresh"></i>
+                        </button>
+                        <button class="btn btn-outline-success " (click)="goToTab('/model/add')">
+                            <i class="glyphicon glyphicon-plus"></i> Add New
+                        </button>
+                    </div>
+                </div>
+
+                <table class="table table-responsive-lg table-hover">
+                    <thead>
+                        <tr>
+                            <td>Manufacturer</td>
+                            <td>Category</td>
+                            <td>Model</td>
+                            <td>Year</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let model of models" (click)="selectModel(model)" data-bs-dismiss="modal">
+                            <td>{{model.carManufacturer?.manufacturer}}</td>
+                            <td>{{model.carCategory?.carCategory}}</td>
+                            <td>{{model.carModel}}</td>
+                            <td>{{model.year}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

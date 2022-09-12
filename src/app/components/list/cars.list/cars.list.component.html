@@ -22,8 +22,7 @@
 
       <h4 class=" d-table-cell">{{ Title }}s</h4>
       <div class="input-group-append d-table-cell tar">
-        <button class="btn btn-outline-success " data-bs-toggle="modal" data-bs-target="#add-new"
-          (click)="resetNewCar()">
+        <button class="btn btn-outline-success " (click)="goToTab('/car/add')">
           <i class="glyphicon glyphicon-plus"></i> Add New
         </button>
       </div>
@@ -109,9 +108,9 @@
         <!-- Input Color -->
         <div class=" form-group col-md-4">
           <label>Color</label>
-          <br> 
+          <br>
           <input class="form-control" [(ngModel)]="newCar.color">
-          
+
         </div>
 
         <!-- Input Price -->
@@ -177,7 +176,7 @@
           <label>Color</label>
           <br>
           <input class="form-control" [(ngModel)]="updatedCar.color">
-          
+
         </div>
 
         <!-- Input Price -->
@@ -189,25 +188,25 @@
         <div class=" form-group col-md-12">
           <label>Car Model</label>
           <br>
-            <select class="btn btn-secondary form-select-sm ">
-              <option selected disabled hidden>
-                {{ selectedCar.carModel?.carManufacturer?.manufacturer }}
-                {{ selectedCar.carModel?.carModel }}
-                ({{ selectedCar.carModel?.year }})
-                - {{ selectedCar.carModel?.carCategory?.carCategory }}
-              </option>
-              <option *ngFor="let model of carModels" (click)="selectUpdateModel(model)" [value]="updatedCar.modelId">
-                <a>
-                  {{ model?.carManufacturer?.manufacturer }}
-                  {{ model?.carModel }}
-                  ({{ model?.year }})
-                  - {{ model?.carCategory?.carCategory }}
-                </a>
-              </option>
-            </select>
+          <select class="btn btn-secondary form-select-sm ">
+            <option selected disabled hidden>
+              {{ selectedCar.carModel?.carManufacturer?.manufacturer }}
+              {{ selectedCar.carModel?.carModel }}
+              ({{ selectedCar.carModel?.year }})
+              - {{ selectedCar.carModel?.carCategory?.carCategory }}
+            </option>
+            <option *ngFor="let model of carModels" (click)="selectUpdateModel(model)" [value]="updatedCar.modelId">
+              <a>
+                {{ model?.carManufacturer?.manufacturer }}
+                {{ model?.carModel }}
+                ({{ model?.year }})
+                - {{ model?.carCategory?.carCategory }}
+              </a>
+            </option>
+          </select>
           <div class="col-md-3 display-inline ">
-            <a class="link-primary text-decoration-underline page-link" 
-            (click)="goTo('/model/add')" data-bs-dismiss="modal">
+            <a class="link-primary text-decoration-underline page-link" (click)="goTo('/model/add')"
+              data-bs-dismiss="modal">
               Create New
             </a>
           </div>

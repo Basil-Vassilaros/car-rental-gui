@@ -60,6 +60,14 @@ export class CarsListComponent implements OnInit {
     const navigationDetails: string[] = [target];
     this.router.navigate(navigationDetails);
   }
+  
+  goToTab(target: string): void {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([target])
+    );
+  
+    window.open(url, '_blank');
+  }
 
   // Get List of Cars from DB
   retrieveCars(): void {
@@ -109,7 +117,6 @@ export class CarsListComponent implements OnInit {
   }
 
   selectUpdateCar(Car: Car){
-    this.updatedCar.carId = Car.carId;
     this.updatedCar.registrationNumber = Car.registrationNumber;
     this.updatedCar.color = Car.color;
     this.updatedCar.price = Car.price;
@@ -137,7 +144,7 @@ export class CarsListComponent implements OnInit {
   }
 
   updateCar() {
-    this.CarService.update(this.updatedCar.carId, this.updatedCar)
+    this.CarService.update(this.selectedCar.carId, this.updatedCar)
     .subscribe({
       next: (data) => {
         console.log(data);

@@ -99,6 +99,14 @@ export class RecordsListComponent implements OnInit {
     const navigationDetails: string[] = [target];
     this.router.navigate(navigationDetails);
   }
+  
+  goToTab(target: string): void {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([target])
+    );
+  
+    window.open(url, '_blank');
+  }
 
   // Calculate difference in Days
   calcTPrice() {
